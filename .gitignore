@@ -1,0 +1,11 @@
+# backup cục bộ do install.sh tạo (chứa bản cài cũ, đường dẫn máy)
+.backup/
+# runtime của các skill khi chạy trong chính repo này
+.chase/
+.arena/
+__pycache__/
+*.pyc
+.env
+.env.*
+*.log
+.DS_Store

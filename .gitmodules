@@ -1,0 +1,3 @@
+[submodule "AI-Factory"]
+	path = AI-Factory
+	url = https://github.com/luongduong147/AI-Factory.git
