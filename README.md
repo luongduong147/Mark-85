@@ -25,6 +25,8 @@ Tôi đã làm hỏng đủ nhiều bản Mark trước để biết ba điều:
 | **`show-me-the-simply-dump`** — *chế độ Happy* | `/show-me-the-simply-dump` | Giải thích như cho người không làm kỹ thuật. Không thuật ngữ, có ví dụ đời thường, dưới 150 chữ. |
 | **`chase-it`** — *radar* | `/chase-it <hiện tượng>` | Lỗi lúc có lúc không? Đặt log theo dõi có đánh dấu, khoanh vùng dần, bắt được rồi thì gỡ sạch log tạm. |
 | **`principal-hero`** — *bàn vẽ* | `/principal-hero <chủ đề \| repo>` | Tư duy từ gốc: phân rã thành phần, tính idiot index, xóa trước rồi mới tối ưu. Không hỏi tên lửa giá bao nhiêu, mà hỏi vì sao nó đắt thế. |
+| **`dont-ship-shit`** — *cổng an ninh xưởng* | `/dont-ship-shit [PR \| MR \| URL]` | Gác cổng merge cho GitHub lẫn GitLab. Soi 5 thứ: code có trùng thứ tôi đã viết không, có làm vỡ regression không, test có kiểm hành vi thật không, sửa tổng quát hay vá đúng case, và PR thuộc tính năng nào (kèm doc dưới 150 chữ). Ra phán quyết MERGE / CHANGES REQUIRED / BLOCK, kèm `file:line`. |
+| **`anti-slop`** — *máy mài vỏ giáp* | `/anti-slop [phạm vi] [--fix]` | Mài hết phần thừa: code chết, code lặp, abstraction đầu cơ, nuốt lỗi, comment kể lể, UI gradient tím kiểu "AI dựng hộ", chữ kiểu chatbot. Xóa trước, sửa sau, hành vi giữ nguyên. |
 
 ### Combo
 
@@ -32,6 +34,7 @@ Tôi đã làm hỏng đủ nhiều bản Mark trước để biết ba điều:
 chase-it ──(bắt được gốc)──► generalize-fixed-it ──(sửa xong)──► comment-mapping annotate
 principal-hero --arena ──► arena ──► SYNTHESIS.md
 factory ──(builder gặp bài khó)──► claude.ai bridge
+PR/MR mới ──► dont-ship-shit ──(soi diff)──► anti-slop ──(vá case?)──► generalize-fixed-it
 ```
 
 Từng module đứng riêng đã ổn. Ghép lại với nhau mới là bộ giáp.
@@ -98,7 +101,7 @@ Phần thân nên theo thứ tự này: vai trò và mục tiêu → đầu ra c
 
 ## Ghi công
 
-- Ý tưởng `arena` và một phần của `clone-me`, `principal-hero` mượn từ [pstack](https://github.com/cursor/plugins/tree/main/pstack) của Lauren Tan (giấy phép MIT). Thiên tài cũng biết đứng trên vai người khổng lồ.
+- Ý tưởng `arena` và một phần của `clone-me`, `principal-hero` mượn từ [pstack](https://github.com/cursor/plugins/tree/main/pstack) của Lauren Tan (giấy phép MIT). Phần chữ của `anti-slop` rút từ skill `unslop`, tiêu chí test hành vi của `dont-ship-shit` rút từ `principle-test-behavior-not-implementation`, cũng của pstack ([bản mirror](https://github.com/backnotprop/pstack)). Thiên tài cũng biết đứng trên vai người khổng lồ.
 - Lắp ráp tại xưởng bởi **luongduong147@gmail.com**.
 
 > *Bộ giáp chỉ ngầu bằng người mặc nó. Nhưng ngầu hơn nữa thì cứ thêm module vào.*

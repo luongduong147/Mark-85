@@ -3,6 +3,7 @@
 # runtime của các skill khi chạy trong chính repo này
 .chase/
 .arena/
+.dss/
 __pycache__/
 *.pyc
 .env
