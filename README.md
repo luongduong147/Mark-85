@@ -2,7 +2,7 @@
 
 > *"Mấy cái suit trước cũng ổn. Cái này thì khác: nó tự lắp vào người bạn chỉ bằng một lệnh `./install.sh`, và nó không cho code rác lọt qua cửa."*
 
-Chào mừng tới xưởng. Đây là bộ giáp skill cho agent của tôi, chạy được trên cả **Claude Code** và **dsh**. Không phải một prompt dài lê thê dán vào chat, mà là 11 module rời. Mỗi module làm một việc, làm cho ra hồn, và biết khi nào nên gọi module bên cạnh.
+Chào mừng tới xưởng. Đây là bộ giáp skill cho agent của tôi, chạy được trên cả **Claude Code** và **dsh**. Không phải một prompt dài lê thê dán vào chat, mà là 12 module rời. Mỗi module làm một việc, làm cho ra hồn, và biết khi nào nên gọi module bên cạnh.
 
 Tôi đã làm hỏng đủ nhiều bản Mark trước để rút ra bốn điều:
 
@@ -32,6 +32,7 @@ Tôi đã làm hỏng đủ nhiều bản Mark trước để rút ra bốn đi�
 | **`generalize-fixed-it`** — *phòng thí nghiệm* | `/generalize-fixed-it <problem>` | Truy gốc qua log và trace, xếp nguyên nhân vào 6 tầng (L1–L6), đưa ra ít nhất 3 giải pháp, cho subagent chạy thử từng cái, rồi một model mạnh hơn chấm điểm. Bản vá đúng case luôn có mặt, nhưng chỉ để làm mốc so sánh. |
 | **`arena`** — *đấu trường* | `/arena <n> <task>` | Thả N agent giải cùng một bài, cho chúng chỉ ra lỗi của nhau, judge chấm mà không biết bài nào của ai, rồi ghép những phần tốt nhất lại. |
 | **`clone-me`** — *J.A.R.V.I.S. học việc* | `/clone-me [session \| project]` | Đọc cách tôi làm việc và những lần tôi phải chỉnh agent, rồi đóng gói thành skill mới. Sau đó phát lại một tình huống cũ để chứng minh nó làm giống tôi thật. |
+| **`the-art-of-vision`** — *phòng thiết kế giáp* | `/the-art-of-vision <brief>` | Cả một studio thiết kế (art director, visual, motion/3D, frontend, copywriter) cộng một BI Developer. Làm landing page, UI app, dashboard, infographic, slide, motion, 3D. Với dashboard: định nghĩa metric trước, kiểm tra đã có bộ đếm/đo chưa, rồi mới chọn biểu đồ. Luôn đưa 3 hướng thật để chọn, tự chụp màn hình và đánh bóng tới khi không còn trông "AI làm". Chi tiết ở [Phòng thiết kế](#phòng-thiết-kế). |
 
 ### Kiểm định: không cho rác lọt qua
 
@@ -47,6 +48,7 @@ Tôi đã làm hỏng đủ nhiều bản Mark trước để rút ra bốn đi�
 chase-it ──(bắt được gốc)──► generalize-fixed-it ──(sửa xong)──► comment-mapping annotate
 principal-hero --arena ──► arena ──► SYNTHESIS.md
 factory ──(builder gặp bài khó)──► claude.ai bridge
+brief ──► the-art-of-vision ──(metric → bộ đo → biểu đồ → 3 hướng → đánh bóng)──► anti-slop --only fe
 PR/MR mới ──► dont-ship-shit ──(soi diff)──► anti-slop
                     └──(vá đúng case?)──► generalize-fixed-it
 ```
@@ -68,6 +70,27 @@ Nhánh của tôi không phải bãi đáp công cộng. Mỗi PR/MR muốn vào
 | 5 | **PR này phục vụ tính năng nào?** | Map qua CMAP, issue, tên nhánh, commit. Kèm doc dưới 150 chữ, vì không ai đọc mô tả PR dài hơn thế. |
 
 Skill chỉ đọc: không push, không sửa nhánh của người khác, không tự approve. Muốn nó comment lên PR thì thêm `--post`, và nó sẽ hỏi lại trước khi đăng. Muốn cổng tự đóng mỗi khi có PR mới thì xem mẫu GitHub Actions và GitLab CI trong `dont-ship-shit/references/auto-run.md`.
+
+---
+
+## Phòng thiết kế
+
+Bộ giáp mà trông như AI làm thì không ai mặc. `the-art-of-vision` vận hành như một studio, và đổi vai dẫn theo chất liệu:
+
+| Chất liệu | Ai dẫn | Điều không thương lượng |
+|---|---|---|
+| Dashboard / BI | BI Developer | **Metric trước, biểu đồ sau.** Mỗi ô phải map về một thẻ metric (công thức, grain, nguồn, ngưỡng) và một quyết định. Chưa đo được thì ghi "chưa có dữ liệu", không bao giờ điền số giả. |
+| Landing page, web | Art director | Màn đầu mở bằng thứ đặc trưng nhất của đề tài. Sản phẩm phải nhìn thấy được trên trang. |
+| UI app | Visual designer + frontend | Bắt đầu từ tác vụ, thiết kế đủ trạng thái rỗng, tải và lỗi. Bấm được thật. |
+| 3D / WebGL | Motion/3D designer | 3D phải có lý do. 60 fps, có ảnh dự phòng, không chiếm cuộn trang. |
+| Infographic, slide, motion | Visual designer | Dữ liệu là nhân vật chính. Tiêu đề slide là kết luận. |
+
+Với dashboard, quy trình là:
+1. Định nghĩa metric. 
+2. `instrument_scan.py` xếp từng metric vào HAVE / DERIVABLE / MISSING, kèm `file:line`.
+3. Chọn hình thức theo việc người đọc phải làm: một trục y, màu theo thực thể, kiểm bằng công cụ cho người mù màu.
+4. Đưa 3 hướng bố cục.
+5. Chụp màn hình bằng `shot.py`, đánh bóng tới khi không còn 3 chỗ đáng sửa.
 
 ---
 
@@ -136,7 +159,8 @@ Module mới cũng phải qua cổng: chạy `/anti-slop` trên chính nó trư�
 
 ## Ghi công
 
-- Ý tưởng `arena` và một phần của `clone-me`, `principal-hero` mượn từ [pstack](https://github.com/cursor/plugins/tree/main/pstack) của Lauren Tan (giấy phép MIT). Phần chữ của `anti-slop` rút từ skill `unslop`, còn tiêu chí test hành vi của `dont-ship-shit` rút từ `principle-test-behavior-not-implementation`, cũng của pstack ([bản mirror](https://github.com/backnotprop/pstack)). Thiên tài cũng biết đứng trên vai người khổng lồ.
+- Ý tưởng `arena` và một phần của `clone-me`, `principal-hero` mượn từ [pstack](https://github.com/cursor/plugins/tree/main/pstack) của Lauren Tan (giấy phép MIT). Phần chữ của `anti-slop` rút từ skill `unslop`, còn tiêu chí test hành vi của `dont-ship-shit` rút từ `principle-test-behavior-not-implementation`, cũng của pstack ([bản mirror](https://github.com/backnotprop/pstack)).
+- Khung studio, cổng 3 hướng và vòng đánh bóng của `the-art-of-vision` chắt lọc từ [huashu-design](https://github.com/alchaincyf/huashu-design) của 花叔 (MIT). Phần chọn biểu đồ dựa trên nguyên tắc của skill `dataviz` đi kèm Claude Code. Thiên tài cũng biết đứng trên vai người khổng lồ.
 - Lắp ráp tại xưởng bởi **Luong Duong** (luongduong147@gmail.com).
 
 > *Bộ giáp chỉ ngầu bằng người mặc nó. Nhưng ngầu hơn nữa thì cứ thêm module vào.*
