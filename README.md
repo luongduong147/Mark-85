@@ -32,7 +32,7 @@ Tôi đã làm hỏng đủ nhiều bản Mark trước để rút ra bốn đi�
 | **`generalize-fixed-it`** — *phòng thí nghiệm* | `/generalize-fixed-it <problem>` | Truy gốc qua log và trace, xếp nguyên nhân vào 6 tầng (L1–L6), đưa ra ít nhất 3 giải pháp, cho subagent chạy thử từng cái, rồi một model mạnh hơn chấm điểm. Bản vá đúng case luôn có mặt, nhưng chỉ để làm mốc so sánh. |
 | **`arena`** — *đấu trường* | `/arena <n> <task>` | Thả N agent giải cùng một bài, cho chúng chỉ ra lỗi của nhau, judge chấm mà không biết bài nào của ai, rồi ghép những phần tốt nhất lại. |
 | **`clone-me`** — *J.A.R.V.I.S. học việc* | `/clone-me [session \| project]` | Đọc cách tôi làm việc và những lần tôi phải chỉnh agent, rồi đóng gói thành skill mới. Sau đó phát lại một tình huống cũ để chứng minh nó làm giống tôi thật. |
-| **`the-art-of-vision`** — *phòng thiết kế giáp* | `/the-art-of-vision <brief>` | Cả một studio thiết kế (art director, visual, motion/3D, frontend, copywriter) cộng một BI Developer. Làm landing page, UI app, dashboard, infographic, slide, motion, 3D. Với dashboard: định nghĩa metric trước, kiểm tra đã có bộ đếm/đo chưa, rồi mới chọn biểu đồ. Luôn đưa 3 hướng thật để chọn, tự chụp màn hình và đánh bóng tới khi không còn trông "AI làm". Chi tiết ở [Phòng thiết kế](#phòng-thiết-kế). |
+| **`the-art-of-vision`** — *phòng thiết kế giáp* | `/the-art-of-vision <brief>` | Một studio thiết kế cộng một BI Developer: landing page, UI app, dashboard, infographic, slide, motion, 3D. Đưa 3 hướng thật để chọn, tự chụp màn hình và đánh bóng tới khi không còn trông "AI làm". Chi tiết ở phần [Phòng thiết kế](#phòng-thiết-kế). |
 
 ### Kiểm định: không cho rác lọt qua
 
@@ -85,12 +85,15 @@ Bộ giáp mà trông như AI làm thì không ai mặc. `the-art-of-vision` v�
 | 3D / WebGL | Motion/3D designer | 3D phải có lý do. 60 fps, có ảnh dự phòng, không chiếm cuộn trang. |
 | Infographic, slide, motion | Visual designer | Dữ liệu là nhân vật chính. Tiêu đề slide là kết luận. |
 
-Với dashboard, quy trình là:
-1. Định nghĩa metric. 
-2. `instrument_scan.py` xếp từng metric vào HAVE / DERIVABLE / MISSING, kèm `file:line`.
-3. Chọn hình thức theo việc người đọc phải làm: một trục y, màu theo thực thể, kiểm bằng công cụ cho người mù màu.
-4. Đưa 3 hướng bố cục.
-5. Chụp màn hình bằng `shot.py`, đánh bóng tới khi không còn 3 chỗ đáng sửa.
+Dashboard đi theo thứ tự cố định. Chưa xong bước 3 thì chưa vẽ một pixel nào:
+
+1. **Định nghĩa metric.** Ai xem, để quyết định việc gì. Dựng cây metric gồm metric chính, dẫn dắt, bảo vệ và chẩn đoán; mỗi metric một thẻ ghi công thức, grain, múi giờ và ngưỡng.
+2. **Kiểm tra bộ đếm/đo.** `instrument_scan.py` quét event, counter, bảng và cột, rồi xếp từng metric vào HAVE / DERIVABLE / MISSING kèm `file:line`. Metric thiếu nguồn thì có sẵn spec event cần thêm.
+3. **Chọn biểu đồ** theo việc người đọc phải làm: một trục y, màu đi theo thực thể, kiểm mù màu bằng công cụ chứ không bằng mắt.
+4. **Đưa 3 hướng bố cục**, metric giữ nguyên ở cả ba.
+5. **Đánh bóng**: chụp màn hình bằng `shot.py`, mỗi vòng sửa 3 chỗ tệ nhất, dừng khi xem kỹ không còn gì đáng sửa.
+
+Các chất liệu khác bỏ bước 1–3 nhưng giữ nguyên cổng 3 hướng và vòng đánh bóng. Không có file cổng (`metric-spec.md`, `direction-approved.md`, `polish-log.md`) nghĩa là bước đó chưa làm.
 
 ---
 
@@ -111,7 +114,9 @@ Script này làm gì:
 - Gặp bản cài cũ không phải symlink thì cất vào `.backup/<thời điểm>/` trước khi thay. Tôi phá đồ nhiều, nhưng không phá đồ của bạn.
 - Chạy lại bao nhiêu lần cũng được. Thêm module mới thì chạy lại là nó tự nhận.
 
-Yêu cầu: `git`, `python3` ≥ 3.8. Không cần `gh` hay `glab`. Có thì `dont-ship-shit` lấy thêm được tiêu đề và nhánh đích của PR/MR.
+Yêu cầu: `git`, `python3` ≥ 3.8. Phần còn lại là tùy chọn:
+- `gh` / `glab`: `dont-ship-shit` lấy thêm được tiêu đề và nhánh đích của PR/MR.
+- Playwright hoặc Chrome/Chromium: `the-art-of-vision` chụp màn hình để đánh bóng. Có thêm Pillow thì ảnh được cắt thành từng màn hình.
 
 > Trên dsh, biến `$ARGUMENTS` không được thay. Mỗi skill đã tự biết lấy tham số từ phần bạn gõ kèm lệnh, nên bạn không cần làm gì.
 
