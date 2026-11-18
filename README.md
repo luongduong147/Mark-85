@@ -2,7 +2,7 @@
 
 > *"Mấy cái suit trước cũng ổn. Cái này thì khác: nó tự lắp vào người bạn chỉ bằng một lệnh `./install.sh`, và nó không cho code rác lọt qua cửa."*
 
-Chào mừng tới xưởng. Đây là bộ giáp skill cho agent của tôi, chạy được trên cả **Claude Code** và **dsh**. Không phải một prompt dài lê thê dán vào chat, mà là 12 module rời. Mỗi module làm một việc, làm cho ra hồn, và biết khi nào nên gọi module bên cạnh.
+Chào mừng tới xưởng. Đây là bộ giáp skill cho agent của tôi, chạy được trên cả **Claude Code** và **dsh**. Không phải một prompt dài lê thê dán vào chat, mà là 13 module rời. Mỗi module làm một việc, làm cho ra hồn, và biết khi nào nên gọi module bên cạnh.
 
 Tôi đã làm hỏng đủ nhiều bản Mark trước để rút ra bốn điều:
 
@@ -33,6 +33,7 @@ Tôi đã làm hỏng đủ nhiều bản Mark trước để rút ra bốn đi�
 | **`arena`** — *đấu trường* | `/arena <n> <task>` | Thả N agent giải cùng một bài, cho chúng chỉ ra lỗi của nhau, judge chấm mà không biết bài nào của ai, rồi ghép những phần tốt nhất lại. |
 | **`clone-me`** — *J.A.R.V.I.S. học việc* | `/clone-me [session \| project]` | Đọc cách tôi làm việc và những lần tôi phải chỉnh agent, rồi đóng gói thành skill mới. Sau đó phát lại một tình huống cũ để chứng minh nó làm giống tôi thật. |
 | **`the-art-of-vision`** — *phòng thiết kế giáp* | `/the-art-of-vision <brief>` | Một studio thiết kế cộng một BI Developer: landing page, UI app, dashboard, infographic, slide, motion, 3D. Đưa 3 hướng thật để chọn, tự chụp màn hình và đánh bóng tới khi không còn trông "AI làm". Chi tiết ở phần [Phòng thiết kế](#phòng-thiết-kế). |
+| **`kage-bunshin`** — *Iron Legion* | `/kage-bunshin <việc> [--n N]` | Một bộ giáp không đủ thì gọi cả quân đoàn: chia việc cho N phân thân haiku, mỗi con một worktree riêng, chạy song song (search hàng loạt, quét toàn codebase, giả lập người dùng bằng Playwright, tìm asset, pentest trong phạm vi được phép). Tôi kiểm lại lời khai của chúng, gộp báo cáo, rồi dọn sạch worktree, nhánh và tiến trình. Không để lại mảnh giáp nào trên sàn. |
 
 ### Kiểm định: không cho rác lọt qua
 
@@ -49,6 +50,7 @@ chase-it ──(bắt được gốc)──► generalize-fixed-it ──(sửa 
 principal-hero --arena ──► arena ──► SYNTHESIS.md
 factory ──(builder gặp bài khó)──► claude.ai bridge
 brief ──► the-art-of-vision ──(metric → bộ đo → biểu đồ → 3 hướng → đánh bóng)──► anti-slop --only fe
+việc to ──► kage-bunshin ──(N phân thân haiku, mỗi con một worktree)──► collect ──► kiểm chứng ──► down
 PR/MR mới ──► dont-ship-shit ──(soi diff)──► anti-slop
                     └──(vá đúng case?)──► generalize-fixed-it
 ```
@@ -117,6 +119,7 @@ Script này làm gì:
 Yêu cầu: `git`, `python3` ≥ 3.8. Phần còn lại là tùy chọn:
 - `gh` / `glab`: `dont-ship-shit` lấy thêm được tiêu đề và nhánh đích của PR/MR.
 - Playwright hoặc Chrome/Chromium: `the-art-of-vision` chụp màn hình để đánh bóng. Có thêm Pillow thì ảnh được cắt thành từng màn hình.
+- `claude` CLI: `kage-bunshin --headless` gọi `claude -p` trong từng worktree. Trong Claude Code thì không cần, vì nó dùng thẳng subagent.
 
 > Trên dsh, biến `$ARGUMENTS` không được thay. Mỗi skill đã tự biết lấy tham số từ phần bạn gõ kèm lệnh, nên bạn không cần làm gì.
 
